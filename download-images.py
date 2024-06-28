@@ -1,21 +1,31 @@
+import urllib.request 
+from PIL import Image 
+import os
+import json
 from tqdm import tqdm
 from io import BytesIO
 from urllib.request import Request, urlopen
-import jsonlines
+import requests
+import os
 
-new_data_dir = 'data_dir'
-os.makedirs(new_data_dir, exist_ok=True)
 
-with jsonlines.open('links.jsonl', 'r') as linkfile:
-    idx = 0
-    for link in tqdm(linkfile.iter()):
-        try:
-            req = Request(link, headers={'User-Agent': 'Mozilla/5.0'}) 
-            image = urlopen(req).read()
-            image = Image.open(BytesIO(image))
-            image = image.resize((1024, 1024))
-            image.save(os.path.join(new_data_dir, str(idx))+'.jpeg')
-        except :
-            print(f'error downloading image {idx}, skipping this one!!')
-        idx += 1
-            
+outdir = './downloaded-images'
+os.makedirs(outdir, exist_ok=True)
+
+idx = 0
+with open('sd3.jsonl', 'r') as linkfile:
+    for link in linkfile:
+        image_urls = link.split('"')
+        for image_url in image_urls:
+            if image_url == '' or image_url =='\n':
+                continue
+            print(image_url)
+            response = requests.get(image_url)
+            header = response.headers.get("Content-Type", "")
+            if header != 'image/jpeg': 
+                continue
+            # change the jpg extension to mp4 to download videos
+            with open(os.path.join(outdir, f'{idx}.jpg'), "wb") as file:
+                file.write(response.content)
+            idx += 1 
+        
