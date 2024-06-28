@@ -1,6 +1,6 @@
 # discord-image-scraper
 A javascript scraper that scraped images/videos from discord channels
-you can control the number of messages to scrape and it is also streaming the scraping process so that you can a channel with a large number of links (larger than the buffer size of javascrpt lanauge)
+you can control the number of messages to scrape and it is also streaming the scraping process so that you can scrape a channel with a large number of links (larger than the buffer size of javascrpt lanauge)
 
 # Scraping Images from Discord Channels
 
