@@ -8,6 +8,9 @@ from urllib.request import Request, urlopen
 import requests
 import os
 
+# if you are downloading videos, comment out the first line of code and uncomment the second line
+media_format = 'image/jpeg'
+# media_format = 'video/mp4'
 
 outdir = './downloaded-images'
 os.makedirs(outdir, exist_ok=True)
@@ -22,7 +25,7 @@ with open('sd3.jsonl', 'r') as linkfile:
             print(image_url)
             response = requests.get(image_url)
             header = response.headers.get("Content-Type", "")
-            if header != 'image/jpeg': 
+            if header != media_format: 
                 continue
             # change the jpg extension to mp4 to download videos
             with open(os.path.join(outdir, f'{idx}.jpg'), "wb") as file:
