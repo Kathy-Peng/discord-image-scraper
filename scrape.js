@@ -15,26 +15,31 @@ Main();
  * Request messages
  */
 async function request(before) {
-    const options = {
-        method: "GET",
-        headers: { authorization: token }
-    };
-    const spinner = ora("Sending 'GET' Request(s)").start();
-    setTimeout(() => {
-        spinner.stop();
-    }, 1000);
-    const request = await fetch(
-        `https://discord.com/api/channels/${fetchChanel_id}/messages?limit=100&${before ? "before=" + before : ""}`,
-        options
-    );
-    return await request.json();
-}
+    try {
+        const options = {
+            method: "GET",
+            headers: { authorization: token }
+        };
+        const spinner = ora("Sending 'GET' Request(s)").start();
+        setTimeout(() => {
+            spinner.stop();
+        }, 1000);
+        const request = await fetch(
+            `https://discord.com/api/channels/${fetchChanel_id}/messages?limit=100&${before ? "before=" + before : ""}`,
+            options
+        );
+        return await request.json();
+    } catch (error) {
+        console.error("An error occurred during the request:", error);
+        throw error; // Re-throw the error if you want calling code to handle it
+        }
+    }
 
 async function go() {
     let page = await request();
     const spinner = ora("Fetching...").start();
     count = 0;
-    while (page.length >= 100 && count < 100) {
+    while (page.length >= 50 && count < 1000) {
         page = await request(page[page.length - 1].id);
         spinner.succeed(greenBright(`Fetched ${page.length} messages`));
         const scraped = page.map((attach) => attach.attachments.map(url => url.proxy_url)).map((getlink) => getlink.toString()).filter(e => e);
