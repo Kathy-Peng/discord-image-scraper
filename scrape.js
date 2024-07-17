@@ -31,7 +31,7 @@ async function request(before) {
         return await request.json();
     } catch (error) {
         console.error("An error occurred during the request:", error);
-        throw error; // Re-throw the error if you want calling code to handle it
+        throw error; 
         }
     }
 
