@@ -16,12 +16,15 @@ idx = 0
 with open("links.jsonl", "r") as file:
     for link in tqdm(file):
         link = link.strip('"')
-        response = requests.get(link)
-        header = response.headers.get("Content-Type", "")
-        type = header.split("/")[0]
-        extension = header.split("/")[1]
-        if type != "image":
-            continue
-        with open(os.path.join(dirname, f"{idx}.{extension}"), "wb") as file:
-            file.write(response.content)
+        try:
+            response = requests.get(link)
+            header = response.headers.get("Content-Type", "")
+            type = header.split("/")[0]
+            extension = header.split("/")[1]
+            if type != "image":
+                continue
+            with open(os.path.join(dirname, f"{idx}.{extension}"), "wb") as file:
+                file.write(response.content)
+        except:
+            print('error with url request, skipping this!')
         idx += 1
